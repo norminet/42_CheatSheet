@@ -52,6 +52,8 @@
     * **[0x03 ~ Using flags for projects' options](#0x03--using-flags-for-projects-options)**  
     * **[0x04 ~ Using gcc flags for Makefile](#0x04--using-gcc-flags-for-makefile)**  
     * **[0x05 ~ Using preprocessor DEBUG macros](#0x05--using-preprocessor-debug-macros)**  
+	* **[0x06 ~ Branching Optimization](#0x06--branching-optimization)**
+	* **[0x07 ~ Reserved Keywords](#0x07--reserved-keywords)**  
 
 ---
 * **[3. Programmer Tools](#programmer-tools)**      
@@ -1369,6 +1371,60 @@ int main(void) {
 }
 ```
 As a convention name should be capitalized with '_' to join words
+
+---
+## 0x06 ~ Branching Optimization
+
+Often you will test that a specific value is reached or that a variable is set using if condition. But the order of the comparisons can improve efficiency of your program.  
+
+What would be wrong with the below function?
+```c
+
+int counter_to_star(int a, int b) {
+	while (42) {
+		if (((a + b) & 1) && a == 42) {
+			break;
+		}
+		a |= 1;
+		a *= b;
+		a %= 60;
+		b++;
+		n++;
+	}
+
+	return n;
+}
+```
+
+What is wrong is that the most unlikely condition ```a == 42``` is tested last, while it should be tested first. The most likely condition, that a + b is odd ```(a + b) & 1``` should be tested only if a == 42, and since 42 is even, you only need to test if b is odd:
+```
+if (a == 42 && (b & 1)) {
+	break;
+```
+
+
+```
+#include <unistd.h>
+
+#define DEBUG true
+
+int main(void) {
+	int a = 42;
+	if (a && a <)
+	return 0;
+}
+```
+
+---
+## 0x07 ~ Reserved Keywords
+
+Keyword | Meaning
+---|---
+**static** | *the function or variable can only be used within its file, it is somewhat similar to the concept of private*
+**inline** | *compiler will attempt to embed the function into the calling code instead of executing an actual call.*
+**const** | *will make the variable immutable* 
+**break; continue;** | *will respectively exit from the loop and go to the beginning of the loop*
+
 
 ---
 # Programmer Tools
